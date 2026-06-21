@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/samples/">
+    <Project Path="BlazorMarkdownEditor.Demo/BlazorMarkdownEditor.Demo.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="BlazorMarkdownEditor/BlazorMarkdownEditor.csproj" />
+  </Folder>
+</Solution>

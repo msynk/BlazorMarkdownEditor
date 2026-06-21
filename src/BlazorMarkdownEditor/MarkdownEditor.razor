@@ -1,0 +1,91 @@
+@namespace BlazorMarkdownEditor
+
+<div @ref="_root" class="@RootClass" style="--bme-height:@Height" @attributes="AdditionalAttributes">
+
+    @if (ShowToolbar)
+    {
+        <div class="bme-toolbar" role="toolbar" aria-label="Markdown formatting">
+            @foreach (var item in ActiveToolbar)
+            {
+                if (item.Type == ToolbarItemType.Separator)
+                {
+                    <span class="bme-toolbar-sep" aria-hidden="true"></span>
+                }
+                else
+                {
+                    var isActive = item.Type == ToolbarItemType.ToggleFullscreen && _fullscreen
+                                || item.Type == ToolbarItemType.Help && _showHelp;
+                    <button type="button"
+                            class="bme-btn @(isActive ? "bme-btn--active" : null)"
+                            title="@ToolbarTitle(item)"
+                            aria-label="@item.Title"
+                            data-cmd="@item.Name"
+                            disabled="@(ReadOnly && item.Type == ToolbarItemType.Command)"
+                            @onclick="() => OnToolbarItemClick(item)">
+                        @((MarkupString)item.Icon)
+                    </button>
+                }
+            }
+        </div>
+    }
+
+    <div class="bme-body bme-body--@Mode.ToString().ToLowerInvariant()">
+        <div class="bme-pane bme-pane--editor">
+            <textarea @ref="_textArea"
+                      class="bme-textarea"
+                      @oninput="OnInput"
+                      placeholder="@Placeholder"
+                      spellcheck="@SpellCheck"
+                      readonly="@ReadOnly"
+                      autocomplete="off"
+                      autocapitalize="off"
+                      autocorrect="off"></textarea>
+        </div>
+
+        <div class="bme-pane bme-pane--preview">
+            @if (string.IsNullOrWhiteSpace(_value))
+            {
+                <p class="bme-preview-empty">Nothing to preview yet.</p>
+            }
+            else
+            {
+                <div class="bme-preview">@_renderedHtml</div>
+            }
+        </div>
+    </div>
+
+    @if (ShowStatusBar)
+    {
+        <div class="bme-statusbar">
+            <span class="bme-status-mode">@Mode</span>
+            <span class="bme-status-spacer"></span>
+            <span>@WordCount words</span>
+            <span>@( (_value?.Length ?? 0) ) chars</span>
+        </div>
+    }
+
+    @if (_showHelp)
+    {
+        <div class="bme-help" @onclick="() => _showHelp = false">
+            <div class="bme-help-card" @onclick:stopPropagation="true">
+                <header>
+                    <strong>Keyboard shortcuts</strong>
+                    <button type="button" class="bme-help-close" @onclick="() => _showHelp = false" aria-label="Close">&times;</button>
+                </header>
+                <dl>
+                    <div><dt>Bold</dt><dd>Ctrl/Cmd + B</dd></div>
+                    <div><dt>Italic</dt><dd>Ctrl/Cmd + I</dd></div>
+                    <div><dt>Strikethrough</dt><dd>Ctrl/Cmd + Shift + S</dd></div>
+                    <div><dt>Link</dt><dd>Ctrl/Cmd + K</dd></div>
+                    <div><dt>Indent / Outdent</dt><dd>Tab / Shift + Tab</dd></div>
+                    <div><dt>Continue list</dt><dd>Enter</dd></div>
+                </dl>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private string ToolbarTitle(MarkdownToolbarItem item) =>
+        string.IsNullOrEmpty(item.Shortcut) ? item.Title : $"{item.Title} ({item.Shortcut})";
+}

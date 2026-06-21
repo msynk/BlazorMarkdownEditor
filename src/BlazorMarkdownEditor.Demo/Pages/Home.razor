@@ -1,0 +1,88 @@
+﻿@page "/"
+
+<PageTitle>BlazorMarkdownEditor</PageTitle>
+
+<div class="demo">
+    <header class="demo-header">
+        <h1>BlazorMarkdownEditor</h1>
+        <p>A native Blazor markdown editor — toolbar, live GFM preview, keyboard shortcuts and smart lists.
+           Zero external dependencies: markdown is rendered by a built-in C# converter.</p>
+    </header>
+
+    <div class="demo-controls">
+        <label>
+            Mode
+            <select @bind="_mode">
+                <option value="@EditorMode.Edit">Edit</option>
+                <option value="@EditorMode.Split">Split</option>
+                <option value="@EditorMode.Preview">Preview</option>
+            </select>
+        </label>
+        <label><input type="checkbox" @bind="_showToolbar" /> Toolbar</label>
+        <label><input type="checkbox" @bind="_showStatus" /> Status bar</label>
+        <label><input type="checkbox" @bind="_readOnly" /> Read-only</label>
+        <label><input type="checkbox" @bind="_allowRawHtml" /> Allow raw HTML</label>
+    </div>
+
+    <MarkdownEditor @bind-Value="_markdown"
+                    @bind-Mode="_mode"
+                    ShowToolbar="_showToolbar"
+                    ShowStatusBar="_showStatus"
+                    ReadOnly="_readOnly"
+                    AllowRawHtml="_allowRawHtml"
+                    Height="460px" />
+
+    <details class="demo-source">
+        <summary>Raw markdown (@_markdown.Length chars)</summary>
+        <pre>@_markdown</pre>
+    </details>
+</div>
+
+@code {
+    private EditorMode _mode = EditorMode.Split;
+    private bool _showToolbar = true;
+    private bool _showStatus = true;
+    private bool _readOnly;
+    private bool _allowRawHtml;
+
+    private string _markdown = SampleContent;
+
+    private const string SampleContent =
+@"# BlazorMarkdownEditor
+
+A **native** Blazor component for editing _markdown_ with a live preview.
+
+## Features
+
+- Toolbar with **bold**, *italic*, ~~strikethrough~~ and more
+- Smart list continuation — press `Enter` to keep going
+- Keyboard shortcuts (`Ctrl+B`, `Ctrl+I`, `Ctrl+K`)
+- Tab / Shift+Tab to indent
+
+### Task list
+
+- [x] Render GitHub Flavored Markdown
+- [x] Tables
+- [ ] World domination
+
+### Table
+
+| Feature      | Supported |
+| ------------ | --------- |
+| Tables       | yes       |
+| Task lists   | yes       |
+| Autolinks    | yes       |
+
+### Code
+
+```csharp
+var pipeline = new MarkdownPipelineBuilder()
+    .UseAdvancedExtensions()
+    .Build();
+```
+
+> Tip: click the eye icon to cycle edit / split / preview.
+
+Visit <https://github.com> for more about GFM.
+";
+}
