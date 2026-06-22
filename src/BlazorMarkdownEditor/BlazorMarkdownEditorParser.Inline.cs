@@ -2,7 +2,7 @@ using System.Text;
 
 namespace BlazorMarkdownEditor;
 
-internal sealed partial class MarkdownParser
+internal sealed partial class BlazorMarkdownEditorParser
 {
     // ---- inline parsing -----------------------------------------------------
 

@@ -12,19 +12,19 @@ namespace BlazorMarkdownEditor;
 /// </summary>
 /// <remarks>
 /// This is intentionally pragmatic rather than 100% CommonMark-conformant: it
-/// targets the output of <see cref="MarkdownEditor"/> and typical hand-written
-/// markdown. HTML is escaped by default for safety (see <see cref="MarkdownOptions.AllowRawHtml"/>).
+/// targets the output of <see cref="BlazorMarkdownEditor"/> and typical hand-written
+/// markdown. HTML is escaped by default for safety (see <see cref="BlazorMarkdownEditorOptions.AllowRawHtml"/>).
 /// </remarks>
-public static class Markdown
+public static class BlazorMarkdownEditorMarkdown
 {
     /// <summary>Converts a markdown string to an HTML fragment.</summary>
-    public static string ToHtml(string? markdown, MarkdownOptions? options = null)
+    public static string ToHtml(string? markdown, BlazorMarkdownEditorOptions? options = null)
     {
-        options ??= MarkdownOptions.Default;
+        options ??= BlazorMarkdownEditorOptions.Default;
         markdown ??= "";
         string normalized = markdown.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\t", "    ");
         var lines = normalized.Split('\n');
-        var parser = new MarkdownParser(options);
+        var parser = new BlazorMarkdownEditorParser(options);
         var sb = new StringBuilder();
         parser.RenderBlocks(lines, 0, lines.Length, sb);
         return sb.ToString();

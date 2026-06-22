@@ -3,13 +3,13 @@ using System.Text;
 namespace BlazorMarkdownEditor;
 
 /// <summary>
-/// Internal block + inline Markdown parser used by <see cref="Markdown"/>.
+/// Internal block + inline Markdown parser used by <see cref="BlazorMarkdownEditorMarkdown"/>.
 /// Split into two files: this one holds block-level parsing, the inline parser
-/// lives in <c>MarkdownParser.Inline.cs</c>.
+/// lives in <c>BlazorMarkdownEditorParser.Inline.cs</c>.
 /// </summary>
-internal sealed partial class MarkdownParser(MarkdownOptions options)
+internal sealed partial class BlazorMarkdownEditorParser(BlazorMarkdownEditorOptions options)
 {
-    private readonly MarkdownOptions _opt = options;
+    private readonly BlazorMarkdownEditorOptions _opt = options;
 
     // ---- block parsing ------------------------------------------------------
 

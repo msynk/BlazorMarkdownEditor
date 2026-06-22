@@ -7,14 +7,14 @@
         <div class="bme-toolbar" role="toolbar" aria-label="Markdown formatting">
             @foreach (var item in ActiveToolbar)
             {
-                if (item.Type == ToolbarItemType.Separator)
+                if (item.Type == BlazorMarkdownEditorToolbarItemType.Separator)
                 {
                     <span class="bme-toolbar-sep" aria-hidden="true"></span>
                 }
                 else
                 {
-                    var isActive = item.Type == ToolbarItemType.ToggleFullscreen && _fullscreen
-                                || item.Type == ToolbarItemType.Help && _showHelp;
+                    var isActive = item.Type == BlazorMarkdownEditorToolbarItemType.ToggleFullscreen && _fullscreen
+                                || item.Type == BlazorMarkdownEditorToolbarItemType.Help && _showHelp;
                     <button type="button"
                             class="bme-btn @(isActive ? "bme-btn--active" : null)"
                             title="@ToolbarTitle(item)"
@@ -88,6 +88,6 @@
 </div>
 
 @code {
-    private string ToolbarTitle(MarkdownToolbarItem item) =>
+    private string ToolbarTitle(BlazorMarkdownEditorToolbarItem item) =>
         string.IsNullOrEmpty(item.Shortcut) ? item.Title : $"{item.Title} ({item.Shortcut})";
 }

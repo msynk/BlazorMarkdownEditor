@@ -5,43 +5,43 @@ namespace BlazorMarkdownEditor;
 /// All icons are hand-authored 24x24 stroke glyphs so the component needs no
 /// external icon font or library.
 /// </summary>
-public static class MarkdownToolbar
+public static class BlazorMarkdownEditorToolbar
 {
     /// <summary>The standard, full-featured toolbar used when none is supplied.</summary>
-    public static IReadOnlyList<MarkdownToolbarItem> Default { get; } = BuildDefault();
+    public static IReadOnlyList<BlazorMarkdownEditorToolbarItem> Default { get; } = BuildDefault();
 
-    private static List<MarkdownToolbarItem> BuildDefault() =>
+    private static List<BlazorMarkdownEditorToolbarItem> BuildDefault() =>
     [
-        new() { Name = "undo", Title = "Undo", Type = ToolbarItemType.Undo, Icon = Icons.Undo, Shortcut = "Ctrl+Z" },
-        new() { Name = "redo", Title = "Redo", Type = ToolbarItemType.Redo, Icon = Icons.Redo, Shortcut = "Ctrl+Y" },
-        MarkdownToolbarItem.Separator,
-        Cmd("bold", "Bold", MarkdownCommand.Bold, Icons.Bold, "Ctrl+B"),
-        Cmd("italic", "Italic", MarkdownCommand.Italic, Icons.Italic, "Ctrl+I"),
-        Cmd("strikethrough", "Strikethrough", MarkdownCommand.Strikethrough, Icons.Strikethrough, "Ctrl+Shift+S"),
-        MarkdownToolbarItem.Separator,
-        Cmd("h1", "Heading 1", MarkdownCommand.Heading1, Icons.H1),
-        Cmd("h2", "Heading 2", MarkdownCommand.Heading2, Icons.H2),
-        Cmd("h3", "Heading 3", MarkdownCommand.Heading3, Icons.H3),
-        Cmd("quote", "Blockquote", MarkdownCommand.Quote, Icons.Quote),
-        MarkdownToolbarItem.Separator,
-        Cmd("ul", "Bullet list", MarkdownCommand.UnorderedList, Icons.UnorderedList),
-        Cmd("ol", "Numbered list", MarkdownCommand.OrderedList, Icons.OrderedList),
-        Cmd("task", "Task list", MarkdownCommand.TaskList, Icons.TaskList),
-        MarkdownToolbarItem.Separator,
-        Cmd("link", "Link", MarkdownCommand.Link, Icons.Link, "Ctrl+K"),
-        Cmd("image", "Image", MarkdownCommand.Image, Icons.Image),
-        Cmd("code", "Inline code", MarkdownCommand.InlineCode, Icons.Code),
-        Cmd("codeblock", "Code block", MarkdownCommand.CodeBlock, Icons.CodeBlock),
-        Cmd("table", "Table", MarkdownCommand.Table, Icons.Table),
-        Cmd("hr", "Horizontal rule", MarkdownCommand.HorizontalRule, Icons.HorizontalRule),
-        MarkdownToolbarItem.Separator,
-        new() { Name = "preview", Title = "Toggle preview mode", Type = ToolbarItemType.TogglePreview, Icon = Icons.Preview },
-        new() { Name = "fullscreen", Title = "Toggle fullscreen", Type = ToolbarItemType.ToggleFullscreen, Icon = Icons.Fullscreen },
-        new() { Name = "help", Title = "Keyboard shortcuts", Type = ToolbarItemType.Help, Icon = Icons.Help },
+        new() { Name = "undo", Title = "Undo", Type = BlazorMarkdownEditorToolbarItemType.Undo, Icon = Icons.Undo, Shortcut = "Ctrl+Z" },
+        new() { Name = "redo", Title = "Redo", Type = BlazorMarkdownEditorToolbarItemType.Redo, Icon = Icons.Redo, Shortcut = "Ctrl+Y" },
+        BlazorMarkdownEditorToolbarItem.Separator,
+        Cmd("bold", "Bold", BlazorMarkdownEditorCommand.Bold, Icons.Bold, "Ctrl+B"),
+        Cmd("italic", "Italic", BlazorMarkdownEditorCommand.Italic, Icons.Italic, "Ctrl+I"),
+        Cmd("strikethrough", "Strikethrough", BlazorMarkdownEditorCommand.Strikethrough, Icons.Strikethrough, "Ctrl+Shift+S"),
+        BlazorMarkdownEditorToolbarItem.Separator,
+        Cmd("h1", "Heading 1", BlazorMarkdownEditorCommand.Heading1, Icons.H1),
+        Cmd("h2", "Heading 2", BlazorMarkdownEditorCommand.Heading2, Icons.H2),
+        Cmd("h3", "Heading 3", BlazorMarkdownEditorCommand.Heading3, Icons.H3),
+        Cmd("quote", "Blockquote", BlazorMarkdownEditorCommand.Quote, Icons.Quote),
+        BlazorMarkdownEditorToolbarItem.Separator,
+        Cmd("ul", "Bullet list", BlazorMarkdownEditorCommand.UnorderedList, Icons.UnorderedList),
+        Cmd("ol", "Numbered list", BlazorMarkdownEditorCommand.OrderedList, Icons.OrderedList),
+        Cmd("task", "Task list", BlazorMarkdownEditorCommand.TaskList, Icons.TaskList),
+        BlazorMarkdownEditorToolbarItem.Separator,
+        Cmd("link", "Link", BlazorMarkdownEditorCommand.Link, Icons.Link, "Ctrl+K"),
+        Cmd("image", "Image", BlazorMarkdownEditorCommand.Image, Icons.Image),
+        Cmd("code", "Inline code", BlazorMarkdownEditorCommand.InlineCode, Icons.Code),
+        Cmd("codeblock", "Code block", BlazorMarkdownEditorCommand.CodeBlock, Icons.CodeBlock),
+        Cmd("table", "Table", BlazorMarkdownEditorCommand.Table, Icons.Table),
+        Cmd("hr", "Horizontal rule", BlazorMarkdownEditorCommand.HorizontalRule, Icons.HorizontalRule),
+        BlazorMarkdownEditorToolbarItem.Separator,
+        new() { Name = "preview", Title = "Toggle preview mode", Type = BlazorMarkdownEditorToolbarItemType.TogglePreview, Icon = Icons.Preview },
+        new() { Name = "fullscreen", Title = "Toggle fullscreen", Type = BlazorMarkdownEditorToolbarItemType.ToggleFullscreen, Icon = Icons.Fullscreen },
+        new() { Name = "help", Title = "Keyboard shortcuts", Type = BlazorMarkdownEditorToolbarItemType.Help, Icon = Icons.Help },
     ];
 
-    private static MarkdownToolbarItem Cmd(string name, string title, MarkdownCommand command, string icon, string? shortcut = null) =>
-        new() { Name = name, Title = title, Command = command, Icon = icon, Shortcut = shortcut, Type = ToolbarItemType.Command };
+    private static BlazorMarkdownEditorToolbarItem Cmd(string name, string title, BlazorMarkdownEditorCommand command, string icon, string? shortcut = null) =>
+        new() { Name = name, Title = title, Command = command, Icon = icon, Shortcut = shortcut, Type = BlazorMarkdownEditorToolbarItemType.Command };
 
     /// <summary>Inline SVG glyphs (no fill, currentColor stroke) used by the default toolbar.</summary>
     public static class Icons

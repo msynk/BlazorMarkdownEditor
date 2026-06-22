@@ -1,7 +1,7 @@
 namespace BlazorMarkdownEditor;
 
 /// <summary>
-/// The result of applying a <see cref="MarkdownCommand"/> to a piece of text.
+/// The result of applying a <see cref="BlazorMarkdownEditorCommand"/> to a piece of text.
 /// Describes the new text content together with the selection range that should
 /// be restored in the textarea afterwards.
 /// </summary>
@@ -9,8 +9,8 @@ namespace BlazorMarkdownEditor;
 /// <param name="Text">The full new text content of the editor.</param>
 /// <param name="SelectionStart">The caret/selection start to restore (char index).</param>
 /// <param name="SelectionEnd">The caret/selection end to restore (char index).</param>
-public readonly record struct EditResult(bool Handled, string Text, int SelectionStart, int SelectionEnd)
+public readonly record struct BlazorMarkdownEditorEditResult(bool Handled, string Text, int SelectionStart, int SelectionEnd)
 {
     /// <summary>A no-op result that leaves the supplied text unchanged.</summary>
-    public static EditResult NotHandled(string text, int start, int end) => new(false, text, start, end);
+    public static BlazorMarkdownEditorEditResult NotHandled(string text, int start, int end) => new(false, text, start, end);
 }

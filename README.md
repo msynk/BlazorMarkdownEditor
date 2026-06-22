@@ -4,7 +4,7 @@ A **native Blazor** markdown editor component with a customizable toolbar, live
 GitHub-Flavored-Markdown preview, keyboard shortcuts and smart list handling.
 
 The design goal is a full-featured editor with **zero external dependencies**.
-Markdown is converted to HTML by a built-in C# renderer (`Markdown.ToHtml`), and
+Markdown is converted to HTML by a built-in C# renderer (`BlazorMarkdownEditorMarkdown.ToHtml`), and
 everything else (toolbar, commands, list logic, two-way binding, styling) is
 native Blazor and C#, plus a small JavaScript interop module that does only what
 the browser requires: read and write the `<textarea>` selection.
@@ -15,13 +15,13 @@ part of the Blazor framework itself (not a third-party library).
 ## Why these choices
 
 - **Built-in markdown renderer.** A small, dependency-free block + inline parser
-  (`Markdown` / `MarkdownParser`) supports the CommonMark blocks plus the GFM
+  (`BlazorMarkdownEditorMarkdown` / `BlazorMarkdownEditorParser`) supports the CommonMark blocks plus the GFM
   features the editor produces: headings, thematic breaks, blockquotes, fenced
   &amp; indented code, ordered/unordered/task lists (nested), tables with
   alignment, emphasis/strong/strikethrough, inline code, links, images and
   autolinks. It is pragmatic rather than 100% CommonMark-conformant.
 - **Markdown logic in C#.** All editing commands (bold, lists, indentation,
-  smart Enter, …) are pure C# functions in `MarkdownCommands`, so they are
+  smart Enter, …) are pure C# functions in `BlazorMarkdownEditorCommands`, so they are
   testable without a browser and there is a single source of truth.
 - **Thin JS layer.** A `<textarea>` caret/selection cannot be controlled from
   C#, so a small ES module handles selection get/set and intercepts keys
@@ -54,7 +54,7 @@ part of the Blazor framework itself (not a third-party library).
 ```razor
 @using BlazorMarkdownEditor
 
-<MarkdownEditor @bind-Value="markdown" Height="460px" />
+<BlazorMarkdownEditor @bind-Value="markdown" Height="460px" />
 
 @code {
     private string markdown = "# Hello\n\nStart **writing**…";
@@ -66,16 +66,16 @@ part of the Blazor framework itself (not a third-party library).
 | Parameter | Type | Default | Description |
 | --------- | ---- | ------- | ----------- |
 | `Value` | `string?` | `null` | Markdown text (`@bind-Value`). |
-| `Mode` | `EditorMode` | `Split` | `Edit` / `Split` / `Preview` (`@bind-Mode`). |
-| `Toolbar` | `IReadOnlyList<MarkdownToolbarItem>?` | default | Custom toolbar layout. |
+| `Mode` | `BlazorMarkdownEditorMode` | `Split` | `Edit` / `Split` / `Preview` (`@bind-Mode`). |
+| `Toolbar` | `IReadOnlyList<BlazorMarkdownEditorToolbarItem>?` | default | Custom toolbar layout. |
 | `ShowToolbar` / `ShowStatusBar` | `bool` | `true` | Toggle chrome. |
 | `ReadOnly` | `bool` | `false` | Disable editing. |
 | `AllowRawHtml` | `bool` | `false` | Allow raw HTML in the preview (unsafe). |
-| `Options` | `MarkdownOptions?` | `null` | Supply custom renderer options. |
+| `Options` | `BlazorMarkdownEditorOptions?` | `null` | Supply custom renderer options. |
 | `Height` | `string` | `"320px"` | Editor height (any CSS length). |
 | `DebounceMilliseconds` | `int` | `150` | Preview re-render debounce. |
 
-The component also exposes `RunCommandAsync(MarkdownCommand)`, `UndoAsync()`,
+The component also exposes `RunCommandAsync(BlazorMarkdownEditorCommand)`, `UndoAsync()`,
 `RedoAsync()` (plus `CanUndo` / `CanRedo`) and `FocusAsync()` for programmatic
 control, and an `HtmlChanged` callback with the rendered HTML.
 

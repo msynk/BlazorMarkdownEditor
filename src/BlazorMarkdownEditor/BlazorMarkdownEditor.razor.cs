@@ -7,18 +7,18 @@ namespace BlazorMarkdownEditor;
 /// A native Blazor markdown editor with a customizable toolbar, keyboard
 /// shortcuts, smart list handling and a live GitHub-flavored preview. It has
 /// no external dependencies: markdown is rendered by the built-in
-/// <see cref="Markdown"/> converter, and a small JS-interop module handles
+/// <see cref="BlazorMarkdownEditorMarkdown"/> converter, and a small JS-interop module handles
 /// textarea selection control.
 /// </summary>
-public partial class MarkdownEditor : ComponentBase, IAsyncDisposable
+public partial class BlazorMarkdownEditor : ComponentBase, IAsyncDisposable
 {
     [Inject] private IJSRuntime JS { get; set; } = default!;
 
     private ElementReference _textArea;
     private ElementReference _root;
     private IJSObjectReference? _module;
-    private DotNetObjectReference<MarkdownEditor>? _selfRef;
-    private MarkdownOptions _markdownOptions = MarkdownOptions.Default;
+    private DotNetObjectReference<BlazorMarkdownEditor>? _selfRef;
+    private BlazorMarkdownEditorOptions _markdownOptions = BlazorMarkdownEditorOptions.Default;
     private bool _allowRawHtmlCache = false;
     private bool _optionsBuilt;
 
@@ -46,13 +46,13 @@ public partial class MarkdownEditor : ComponentBase, IAsyncDisposable
     [Parameter] public string Placeholder { get; set; } = "Write some markdown\u2026";
 
     /// <summary>Which panes are visible. Supports two-way binding via <c>@bind-Mode</c>.</summary>
-    [Parameter] public EditorMode Mode { get; set; } = EditorMode.Split;
+    [Parameter] public BlazorMarkdownEditorMode Mode { get; set; } = BlazorMarkdownEditorMode.Split;
 
     /// <summary>Raised when the display mode changes.</summary>
-    [Parameter] public EventCallback<EditorMode> ModeChanged { get; set; }
+    [Parameter] public EventCallback<BlazorMarkdownEditorMode> ModeChanged { get; set; }
 
-    /// <summary>Toolbar layout. Defaults to <see cref="MarkdownToolbar.Default"/> when null.</summary>
-    [Parameter] public IReadOnlyList<MarkdownToolbarItem>? Toolbar { get; set; }
+    /// <summary>Toolbar layout. Defaults to <see cref="BlazorMarkdownEditorToolbar.Default"/> when null.</summary>
+    [Parameter] public IReadOnlyList<BlazorMarkdownEditorToolbarItem>? Toolbar { get; set; }
 
     /// <summary>Whether the toolbar is shown.</summary>
     [Parameter] public bool ShowToolbar { get; set; } = true;
@@ -80,7 +80,7 @@ public partial class MarkdownEditor : ComponentBase, IAsyncDisposable
     [Parameter] public bool AllowRawHtml { get; set; }
 
     /// <summary>Optional custom options for the built-in markdown renderer. Overrides <see cref="AllowRawHtml"/>.</summary>
-    [Parameter] public MarkdownOptions? Options { get; set; }
+    [Parameter] public BlazorMarkdownEditorOptions? Options { get; set; }
 
     /// <summary>Debounce window (ms) before the preview re-renders while typing.</summary>
     [Parameter] public int DebounceMilliseconds { get; set; } = 150;
@@ -94,14 +94,14 @@ public partial class MarkdownEditor : ComponentBase, IAsyncDisposable
 
     #endregion
 
-    private IReadOnlyList<MarkdownToolbarItem> ActiveToolbar => Toolbar ?? MarkdownToolbar.Default;
+    private IReadOnlyList<BlazorMarkdownEditorToolbarItem> ActiveToolbar => Toolbar ?? BlazorMarkdownEditorToolbar.Default;
 
     /// <summary>Determines whether a toolbar button should be rendered disabled.</summary>
-    private bool IsToolbarItemDisabled(MarkdownToolbarItem item) => item.Type switch
+    private bool IsToolbarItemDisabled(BlazorMarkdownEditorToolbarItem item) => item.Type switch
     {
-        ToolbarItemType.Command => ReadOnly,
-        ToolbarItemType.Undo => ReadOnly || !_canUndo,
-        ToolbarItemType.Redo => ReadOnly || !_canRedo,
+        BlazorMarkdownEditorToolbarItemType.Command => ReadOnly,
+        BlazorMarkdownEditorToolbarItemType.Undo => ReadOnly || !_canUndo,
+        BlazorMarkdownEditorToolbarItemType.Redo => ReadOnly || !_canRedo,
         _ => false
     };
     private int WordCount =>
@@ -129,7 +129,7 @@ public partial class MarkdownEditor : ComponentBase, IAsyncDisposable
     private void BuildOptions()
     {
         _allowRawHtmlCache = AllowRawHtml;
-        _markdownOptions = Options ?? (AllowRawHtml ? new MarkdownOptions { AllowRawHtml = true } : MarkdownOptions.Default);
+        _markdownOptions = Options ?? (AllowRawHtml ? new BlazorMarkdownEditorOptions { AllowRawHtml = true } : BlazorMarkdownEditorOptions.Default);
         _optionsBuilt = true;
     }
 
@@ -138,7 +138,7 @@ public partial class MarkdownEditor : ComponentBase, IAsyncDisposable
         if (firstRender)
         {
             _module = await JS.InvokeAsync<IJSObjectReference>(
-                "import", "./_content/BlazorMarkdownEditor/markdownEditor.js");
+                "import", "./_content/BlazorMarkdownEditor/blazor-markdowneditor.js");
             _selfRef = DotNetObjectReference.Create(this);
             await _module.InvokeVoidAsync("init", _textArea, _root, _selfRef);
         }
@@ -184,7 +184,7 @@ public partial class MarkdownEditor : ComponentBase, IAsyncDisposable
     }
 
     private void RenderNow() =>
-        _renderedHtml = (MarkupString)Markdown.ToHtml(_value ?? "", _markdownOptions);
+        _renderedHtml = (MarkupString)BlazorMarkdownEditorMarkdown.ToHtml(_value ?? "", _markdownOptions);
 
     private Task NotifyHtmlAsync() =>
         HtmlChanged.HasDelegate ? HtmlChanged.InvokeAsync(_renderedHtml.Value) : Task.CompletedTask;
@@ -197,36 +197,36 @@ public partial class MarkdownEditor : ComponentBase, IAsyncDisposable
     [JSInvokable]
     public CommandResult ApplyCommandAsync(string command, int start, int end, string value)
     {
-        if (ReadOnly || !Enum.TryParse<MarkdownCommand>(command, out var cmd))
+        if (ReadOnly || !Enum.TryParse<BlazorMarkdownEditorCommand>(command, out var cmd))
             return new CommandResult(false, value, start, end);
 
-        EditResult r = MarkdownCommands.Apply(cmd, value, start, end, IndentUnit);
+        BlazorMarkdownEditorEditResult r = BlazorMarkdownEditorCommands.Apply(cmd, value, start, end, IndentUnit);
         return new CommandResult(r.Handled, r.Text, r.SelectionStart, r.SelectionEnd);
     }
 
-    private async Task OnToolbarItemClick(MarkdownToolbarItem item)
+    private async Task OnToolbarItemClick(BlazorMarkdownEditorToolbarItem item)
     {
         switch (item.Type)
         {
-            case ToolbarItemType.Command when item.Command is { } cmd && _module is not null:
+            case BlazorMarkdownEditorToolbarItemType.Command when item.Command is { } cmd && _module is not null:
                 await _module.InvokeVoidAsync("invoke", _textArea, cmd.ToString());
                 break;
-            case ToolbarItemType.Undo:
+            case BlazorMarkdownEditorToolbarItemType.Undo:
                 await UndoAsync();
                 break;
-            case ToolbarItemType.Redo:
+            case BlazorMarkdownEditorToolbarItemType.Redo:
                 await RedoAsync();
                 break;
-            case ToolbarItemType.TogglePreview:
+            case BlazorMarkdownEditorToolbarItemType.TogglePreview:
                 await CycleModeAsync();
                 break;
-            case ToolbarItemType.ToggleFullscreen:
+            case BlazorMarkdownEditorToolbarItemType.ToggleFullscreen:
                 _fullscreen = !_fullscreen;
                 break;
-            case ToolbarItemType.Help:
+            case BlazorMarkdownEditorToolbarItemType.Help:
                 _showHelp = !_showHelp;
                 break;
-            case ToolbarItemType.Custom when item.OnClick is not null:
+            case BlazorMarkdownEditorToolbarItemType.Custom when item.OnClick is not null:
                 await item.OnClick(this);
                 break;
         }
@@ -236,16 +236,16 @@ public partial class MarkdownEditor : ComponentBase, IAsyncDisposable
     {
         var next = Mode switch
         {
-            EditorMode.Edit => EditorMode.Split,
-            EditorMode.Split => EditorMode.Preview,
-            _ => EditorMode.Edit
+            BlazorMarkdownEditorMode.Edit => BlazorMarkdownEditorMode.Split,
+            BlazorMarkdownEditorMode.Split => BlazorMarkdownEditorMode.Preview,
+            _ => BlazorMarkdownEditorMode.Edit
         };
         Mode = next;
         await ModeChanged.InvokeAsync(next);
     }
 
     /// <summary>Programmatically runs a command (as if a toolbar button was pressed).</summary>
-    public async Task RunCommandAsync(MarkdownCommand command)
+    public async Task RunCommandAsync(BlazorMarkdownEditorCommand command)
     {
         if (_module is not null)
             await _module.InvokeVoidAsync("invoke", _textArea, command.ToString());

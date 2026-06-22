@@ -1,9 +1,9 @@
 namespace BlazorMarkdownEditor;
 
 /// <summary>
-/// Controls which panes the <see cref="MarkdownEditor"/> displays.
+/// Controls which panes the <see cref="BlazorMarkdownEditor"/> displays.
 /// </summary>
-public enum EditorMode
+public enum BlazorMarkdownEditorMode
 {
     /// <summary>Only the markdown text area is shown.</summary>
     Edit,

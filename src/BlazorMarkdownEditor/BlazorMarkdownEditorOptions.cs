@@ -1,9 +1,9 @@
 namespace BlazorMarkdownEditor;
 
 /// <summary>
-/// Options controlling the built-in <see cref="Markdown"/> renderer.
+/// Options controlling the built-in <see cref="BlazorMarkdownEditorMarkdown"/> renderer.
 /// </summary>
-public sealed class MarkdownOptions
+public sealed class BlazorMarkdownEditorOptions
 {
     /// <summary>
     /// When false (default) any raw HTML in the markdown source is escaped,
@@ -21,5 +21,5 @@ public sealed class MarkdownOptions
         ["http", "https", "mailto", "tel"];
 
     /// <summary>Default, safe options (raw HTML escaped).</summary>
-    public static MarkdownOptions Default { get; } = new();
+    public static BlazorMarkdownEditorOptions Default { get; } = new();
 }

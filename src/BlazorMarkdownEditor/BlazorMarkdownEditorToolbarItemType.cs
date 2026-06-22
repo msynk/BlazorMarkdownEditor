@@ -1,9 +1,9 @@
 namespace BlazorMarkdownEditor;
 
-/// <summary>Describes how a <see cref="MarkdownToolbarItem"/> behaves when clicked.</summary>
-public enum ToolbarItemType
+/// <summary>Describes how a <see cref="BlazorMarkdownEditorToolbarItem"/> behaves when clicked.</summary>
+public enum BlazorMarkdownEditorToolbarItemType
 {
-    /// <summary>Runs the associated <see cref="MarkdownCommand"/> against the text.</summary>
+    /// <summary>Runs the associated <see cref="BlazorMarkdownEditorCommand"/> against the text.</summary>
     Command,
 
     /// <summary>Reverts the editor to the previous state in the undo history.</summary>

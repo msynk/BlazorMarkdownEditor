@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 @inject IJSRuntime JS
 
 <PageTitle>BlazorMarkdownEditor</PageTitle>
@@ -30,9 +30,9 @@
             <label class="control">
                 <span>Mode</span>
                 <select @bind="_mode">
-                    <option value="@EditorMode.Edit">Edit</option>
-                    <option value="@EditorMode.Split">Split</option>
-                    <option value="@EditorMode.Preview">Preview</option>
+                    <option value="@BlazorMarkdownEditorMode.Edit">Edit</option>
+                    <option value="@BlazorMarkdownEditorMode.Split">Split</option>
+                    <option value="@BlazorMarkdownEditorMode.Preview">Preview</option>
                 </select>
             </label>
             <label class="control"><input type="checkbox" @bind="_showToolbar" /> Toolbar</label>
@@ -41,7 +41,7 @@
             <label class="control"><input type="checkbox" @bind="_allowRawHtml" /> Allow raw HTML</label>
         </div>
 
-        <MarkdownEditor @bind-Value="_markdown"
+        <BlazorMarkdownEditor @bind-Value="_markdown"
                         @bind-Mode="_mode"
                         ShowToolbar="_showToolbar"
                         ShowStatusBar="_showStatus"
@@ -80,7 +80,7 @@
                 </thead>
                 <tbody>
                     <tr><td><code>Value</code></td><td><code>string?</code></td><td><code>null</code></td><td>Markdown text (<code>@@bind-Value</code>).</td></tr>
-                    <tr><td><code>Mode</code></td><td><code>EditorMode</code></td><td><code>Split</code></td><td>Edit / Split / Preview (<code>@@bind-Mode</code>).</td></tr>
+                    <tr><td><code>Mode</code></td><td><code>BlazorMarkdownEditorMode</code></td><td><code>Split</code></td><td>Edit / Split / Preview (<code>@@bind-Mode</code>).</td></tr>
                     <tr><td><code>ShowToolbar</code></td><td><code>bool</code></td><td><code>true</code></td><td>Show the formatting toolbar.</td></tr>
                     <tr><td><code>ShowStatusBar</code></td><td><code>bool</code></td><td><code>true</code></td><td>Show the word / character status bar.</td></tr>
                     <tr><td><code>ReadOnly</code></td><td><code>bool</code></td><td><code>false</code></td><td>Disable editing.</td></tr>
@@ -94,7 +94,7 @@
 </div>
 
 @code {
-    private EditorMode _mode = EditorMode.Split;
+    private BlazorMarkdownEditorMode _mode = BlazorMarkdownEditorMode.Split;
     private bool _showToolbar = true;
     private bool _showStatus = true;
     private bool _readOnly;
@@ -115,7 +115,7 @@
     private const string UsageSnippet =
 @"@using BlazorMarkdownEditor
 
-<MarkdownEditor @bind-Value=""markdown""
+<BlazorMarkdownEditor @bind-Value=""markdown""
                 @bind-Mode=""mode""
                 ShowToolbar=""true""
                 ShowStatusBar=""true""
@@ -123,7 +123,7 @@
 
 @code {
     private string markdown = ""# Hello\n\nStart **writing**…"";
-    private EditorMode mode = EditorMode.Split;
+    private BlazorMarkdownEditorMode mode = BlazorMarkdownEditorMode.Split;
 }";
 
     private const string SampleContent =
@@ -155,7 +155,7 @@ A **native** Blazor component for editing _markdown_ with a live preview.
 ### Code
 
 ```csharp
-var html = Markdown.ToHtml(""# Hello **world**"");
+var html = BlazorMarkdownEditorMarkdown.ToHtml(""# Hello **world**"");
 ```
 
 > Tip: click the eye icon to cycle edit / split / preview.
