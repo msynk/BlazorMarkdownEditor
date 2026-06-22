@@ -20,7 +20,7 @@
                             title="@ToolbarTitle(item)"
                             aria-label="@item.Title"
                             data-cmd="@item.Name"
-                            disabled="@(ReadOnly && item.Type == ToolbarItemType.Command)"
+                            disabled="@IsToolbarItemDisabled(item)"
                             @onclick="() => OnToolbarItemClick(item)">
                         @((MarkupString)item.Icon)
                     </button>
@@ -77,6 +77,8 @@
                     <div><dt>Italic</dt><dd>Ctrl/Cmd + I</dd></div>
                     <div><dt>Strikethrough</dt><dd>Ctrl/Cmd + Shift + S</dd></div>
                     <div><dt>Link</dt><dd>Ctrl/Cmd + K</dd></div>
+                    <div><dt>Undo</dt><dd>Ctrl/Cmd + Z</dd></div>
+                    <div><dt>Redo</dt><dd>Ctrl/Cmd + Y (or Shift + Z)</dd></div>
                     <div><dt>Indent / Outdent</dt><dd>Tab / Shift + Tab</dd></div>
                     <div><dt>Continue list</dt><dd>Enter</dd></div>
                 </dl>

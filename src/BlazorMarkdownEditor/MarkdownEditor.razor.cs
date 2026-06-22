@@ -26,6 +26,8 @@ public partial class MarkdownEditor : ComponentBase, IAsyncDisposable
     private MarkupString _renderedHtml;
     private bool _fullscreen;
     private bool _showHelp;
+    private bool _canUndo;
+    private bool _canRedo;
     private bool _pendingValuePush;
     private CancellationTokenSource? _debounceCts;
 
@@ -94,6 +96,14 @@ public partial class MarkdownEditor : ComponentBase, IAsyncDisposable
 
     private IReadOnlyList<MarkdownToolbarItem> ActiveToolbar => Toolbar ?? MarkdownToolbar.Default;
 
+    /// <summary>Determines whether a toolbar button should be rendered disabled.</summary>
+    private bool IsToolbarItemDisabled(MarkdownToolbarItem item) => item.Type switch
+    {
+        ToolbarItemType.Command => ReadOnly,
+        ToolbarItemType.Undo => ReadOnly || !_canUndo,
+        ToolbarItemType.Redo => ReadOnly || !_canRedo,
+        _ => false
+    };
     private int WordCount =>
         string.IsNullOrWhiteSpace(_value)
             ? 0
@@ -201,6 +211,12 @@ public partial class MarkdownEditor : ComponentBase, IAsyncDisposable
             case ToolbarItemType.Command when item.Command is { } cmd && _module is not null:
                 await _module.InvokeVoidAsync("invoke", _textArea, cmd.ToString());
                 break;
+            case ToolbarItemType.Undo:
+                await UndoAsync();
+                break;
+            case ToolbarItemType.Redo:
+                await RedoAsync();
+                break;
             case ToolbarItemType.TogglePreview:
                 await CycleModeAsync();
                 break;
@@ -233,6 +249,40 @@ public partial class MarkdownEditor : ComponentBase, IAsyncDisposable
     {
         if (_module is not null)
             await _module.InvokeVoidAsync("invoke", _textArea, command.ToString());
+    }
+
+    /// <summary>Reverts the editor to the previous state in the undo history.</summary>
+    public async Task UndoAsync()
+    {
+        if (!ReadOnly && _module is not null)
+            await _module.InvokeVoidAsync("undoCommand", _textArea);
+    }
+
+    /// <summary>Re-applies the most recently undone change.</summary>
+    public async Task RedoAsync()
+    {
+        if (!ReadOnly && _module is not null)
+            await _module.InvokeVoidAsync("redoCommand", _textArea);
+    }
+
+    /// <summary>True when there is at least one change that can be undone.</summary>
+    public bool CanUndo => _canUndo;
+
+    /// <summary>True when there is at least one undone change that can be redone.</summary>
+    public bool CanRedo => _canRedo;
+
+    /// <summary>
+    /// Invoked from JavaScript whenever the undo/redo history changes, so the
+    /// toolbar buttons can reflect the current availability.
+    /// </summary>
+    [JSInvokable]
+    public void OnHistoryChanged(bool canUndo, bool canRedo)
+    {
+        if (canUndo == _canUndo && canRedo == _canRedo)
+            return;
+        _canUndo = canUndo;
+        _canRedo = canRedo;
+        _ = InvokeAsync(StateHasChanged);
     }
 
     /// <summary>Moves keyboard focus into the editor textarea.</summary>

@@ -12,6 +12,9 @@ public static class MarkdownToolbar
 
     private static List<MarkdownToolbarItem> BuildDefault() =>
     [
+        new() { Name = "undo", Title = "Undo", Type = ToolbarItemType.Undo, Icon = Icons.Undo, Shortcut = "Ctrl+Z" },
+        new() { Name = "redo", Title = "Redo", Type = ToolbarItemType.Redo, Icon = Icons.Redo, Shortcut = "Ctrl+Y" },
+        MarkdownToolbarItem.Separator,
         Cmd("bold", "Bold", MarkdownCommand.Bold, Icons.Bold, "Ctrl+B"),
         Cmd("italic", "Italic", MarkdownCommand.Italic, Icons.Italic, "Ctrl+I"),
         Cmd("strikethrough", "Strikethrough", MarkdownCommand.Strikethrough, Icons.Strikethrough, "Ctrl+Shift+S"),
@@ -47,6 +50,8 @@ public static class MarkdownToolbar
         private const string Close = "</svg>";
         private static string S(string body) => Open + body + Close;
 
+        public static readonly string Undo = S("<path d=\"M9 7L4 12l5 5\"/><path d=\"M4 12h11a5 5 0 0 1 0 10h-1\"/>");
+        public static readonly string Redo = S("<path d=\"M15 7l5 5-5 5\"/><path d=\"M20 12H9a5 5 0 0 0 0 10h1\"/>");
         public static readonly string Bold = S("<path d=\"M6 4h7a4 4 0 0 1 0 8H6z\"/><path d=\"M6 12h8a4 4 0 0 1 0 8H6z\"/>");
         public static readonly string Italic = S("<line x1=\"19\" y1=\"4\" x2=\"10\" y2=\"4\"/><line x1=\"14\" y1=\"20\" x2=\"5\" y2=\"20\"/><line x1=\"15\" y1=\"4\" x2=\"9\" y2=\"20\"/>");
         public static readonly string Strikethrough = S("<path d=\"M16 4H9a3 3 0 0 0-2.83 4\"/><path d=\"M14 12a4 4 0 0 1 0 8H6\"/><line x1=\"4\" y1=\"12\" x2=\"20\" y2=\"12\"/>");

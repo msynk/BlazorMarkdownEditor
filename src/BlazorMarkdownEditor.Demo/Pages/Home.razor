@@ -1,41 +1,96 @@
 ﻿@page "/"
+@inject IJSRuntime JS
 
 <PageTitle>BlazorMarkdownEditor</PageTitle>
 
 <div class="demo">
-    <header class="demo-header">
+
+    <section class="hero">
         <h1>BlazorMarkdownEditor</h1>
-        <p>A native Blazor markdown editor — toolbar, live GFM preview, keyboard shortcuts and smart lists.
-           Zero external dependencies: markdown is rendered by a built-in C# converter.</p>
-    </header>
+        <p class="lead">
+            A native Blazor markdown editor with a customizable toolbar, live GitHub-Flavored-Markdown
+            preview, keyboard shortcuts and smart list handling &mdash; with zero external dependencies.
+        </p>
+        <div class="pills">
+            <span class="pill">Zero JS dependencies</span>
+            <span class="pill">Live GFM preview</span>
+            <span class="pill">Undo / redo</span>
+            <span class="pill">Keyboard shortcuts</span>
+            <span class="pill">Light &amp; dark themes</span>
+        </div>
+    </section>
 
-    <div class="demo-controls">
-        <label>
-            Mode
-            <select @bind="_mode">
-                <option value="@EditorMode.Edit">Edit</option>
-                <option value="@EditorMode.Split">Split</option>
-                <option value="@EditorMode.Preview">Preview</option>
-            </select>
-        </label>
-        <label><input type="checkbox" @bind="_showToolbar" /> Toolbar</label>
-        <label><input type="checkbox" @bind="_showStatus" /> Status bar</label>
-        <label><input type="checkbox" @bind="_readOnly" /> Read-only</label>
-        <label><input type="checkbox" @bind="_allowRawHtml" /> Allow raw HTML</label>
-    </div>
+    <section class="card">
+        <div class="card-head">
+            <h2>Live demo</h2>
+            <p>Tweak the options and start typing. Everything you see renders through the built-in C# converter.</p>
+        </div>
 
-    <MarkdownEditor @bind-Value="_markdown"
-                    @bind-Mode="_mode"
-                    ShowToolbar="_showToolbar"
-                    ShowStatusBar="_showStatus"
-                    ReadOnly="_readOnly"
-                    AllowRawHtml="_allowRawHtml"
-                    Height="460px" />
+        <div class="demo-controls">
+            <label class="control">
+                <span>Mode</span>
+                <select @bind="_mode">
+                    <option value="@EditorMode.Edit">Edit</option>
+                    <option value="@EditorMode.Split">Split</option>
+                    <option value="@EditorMode.Preview">Preview</option>
+                </select>
+            </label>
+            <label class="control"><input type="checkbox" @bind="_showToolbar" /> Toolbar</label>
+            <label class="control"><input type="checkbox" @bind="_showStatus" /> Status bar</label>
+            <label class="control"><input type="checkbox" @bind="_readOnly" /> Read-only</label>
+            <label class="control"><input type="checkbox" @bind="_allowRawHtml" /> Allow raw HTML</label>
+        </div>
 
-    <details class="demo-source">
-        <summary>Raw markdown (@_markdown.Length chars)</summary>
-        <pre>@_markdown</pre>
-    </details>
+        <MarkdownEditor @bind-Value="_markdown"
+                        @bind-Mode="_mode"
+                        ShowToolbar="_showToolbar"
+                        ShowStatusBar="_showStatus"
+                        ReadOnly="_readOnly"
+                        AllowRawHtml="_allowRawHtml"
+                        Height="460px" />
+
+        <details class="raw-source">
+            <summary>View raw markdown (@_markdown.Length chars)</summary>
+            <pre>@_markdown</pre>
+        </details>
+    </section>
+
+    <section class="card">
+        <div class="card-head">
+            <h2>Usage</h2>
+            <p>Add the component to any Razor page and bind it to a string. That's the whole setup.</p>
+        </div>
+
+        <div class="code-block">
+            <button class="copy-btn" @onclick="CopyUsageAsync">@(_copied ? "Copied" : "Copy")</button>
+            <pre><code>@UsageSnippet</code></pre>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="card-head">
+            <h2>Common parameters</h2>
+            <p>The most-used options &mdash; see the README for the full list and programmatic API.</p>
+        </div>
+
+        <div class="table-wrap">
+            <table class="params">
+                <thead>
+                    <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>Value</code></td><td><code>string?</code></td><td><code>null</code></td><td>Markdown text (<code>@@bind-Value</code>).</td></tr>
+                    <tr><td><code>Mode</code></td><td><code>EditorMode</code></td><td><code>Split</code></td><td>Edit / Split / Preview (<code>@@bind-Mode</code>).</td></tr>
+                    <tr><td><code>ShowToolbar</code></td><td><code>bool</code></td><td><code>true</code></td><td>Show the formatting toolbar.</td></tr>
+                    <tr><td><code>ShowStatusBar</code></td><td><code>bool</code></td><td><code>true</code></td><td>Show the word / character status bar.</td></tr>
+                    <tr><td><code>ReadOnly</code></td><td><code>bool</code></td><td><code>false</code></td><td>Disable editing.</td></tr>
+                    <tr><td><code>AllowRawHtml</code></td><td><code>bool</code></td><td><code>false</code></td><td>Allow raw HTML in the preview (unsafe).</td></tr>
+                    <tr><td><code>Height</code></td><td><code>string</code></td><td><code>"320px"</code></td><td>Editor height (any CSS length).</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
 </div>
 
 @code {
@@ -44,8 +99,32 @@
     private bool _showStatus = true;
     private bool _readOnly;
     private bool _allowRawHtml;
+    private bool _copied;
 
     private string _markdown = SampleContent;
+
+    private async Task CopyUsageAsync()
+    {
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", UsageSnippet);
+        _copied = true;
+        StateHasChanged();
+        await Task.Delay(1500);
+        _copied = false;
+    }
+
+    private const string UsageSnippet =
+@"@using BlazorMarkdownEditor
+
+<MarkdownEditor @bind-Value=""markdown""
+                @bind-Mode=""mode""
+                ShowToolbar=""true""
+                ShowStatusBar=""true""
+                Height=""460px"" />
+
+@code {
+    private string markdown = ""# Hello\n\nStart **writing**…"";
+    private EditorMode mode = EditorMode.Split;
+}";
 
     private const string SampleContent =
 @"# BlazorMarkdownEditor
@@ -76,9 +155,7 @@ A **native** Blazor component for editing _markdown_ with a live preview.
 ### Code
 
 ```csharp
-var pipeline = new MarkdownPipelineBuilder()
-    .UseAdvancedExtensions()
-    .Build();
+var html = Markdown.ToHtml(""# Hello **world**"");
 ```
 
 > Tip: click the eye icon to cycle edit / split / preview.

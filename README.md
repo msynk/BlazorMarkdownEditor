@@ -37,6 +37,9 @@ part of the Blazor framework itself (not a third-party library).
   numbered / task lists, link, image, inline code, fenced code block, table,
   horizontal rule — all data-driven and reorderable.
 - Live preview with **Edit / Split / Preview** modes.
+- Full **undo / redo** history with toolbar buttons and `Ctrl/Cmd+Z`,
+  `Ctrl/Cmd+Y` / `Ctrl/Cmd+Shift+Z` shortcuts. Rapid keystrokes are coalesced
+  into a single step and toolbar commands are undoable as one step.
 - Keyboard shortcuts: `Ctrl/Cmd+B`, `Ctrl/Cmd+I`, `Ctrl/Cmd+K`,
   `Ctrl/Cmd+Shift+S`.
 - Smart `Tab` / `Shift+Tab` indentation and automatic list continuation on
@@ -72,8 +75,9 @@ part of the Blazor framework itself (not a third-party library).
 | `Height` | `string` | `"320px"` | Editor height (any CSS length). |
 | `DebounceMilliseconds` | `int` | `150` | Preview re-render debounce. |
 
-The component also exposes `RunCommandAsync(MarkdownCommand)` and `FocusAsync()`
-for programmatic control, and an `HtmlChanged` callback with the rendered HTML.
+The component also exposes `RunCommandAsync(MarkdownCommand)`, `UndoAsync()`,
+`RedoAsync()` (plus `CanUndo` / `CanRedo`) and `FocusAsync()` for programmatic
+control, and an `HtmlChanged` callback with the rendered HTML.
 
 ## Project layout
 
@@ -90,9 +94,9 @@ dotnet run --project src/BlazorMarkdownEditor.Demo
 
 ## Notes & limitations
 
-- Because programmatic edits replace the textarea value, the browser's native
-  undo stack is bypassed for toolbar/shortcut actions (normal typing keeps
-  native undo). A custom undo stack is a possible future addition.
+- Toolbar/shortcut edits replace the textarea value, which bypasses the
+  browser's native undo stack, so the component maintains its own undo/redo
+  history (see *Features*) that covers both typing and commands.
 - The textarea is intentionally *uncontrolled* (JavaScript owns its value) to
   preserve the caret position; this is the standard approach for Blazor text
   editors. In prerendered/SSR scenarios the initial text is applied once the

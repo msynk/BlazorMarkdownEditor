@@ -6,6 +6,12 @@ public enum ToolbarItemType
     /// <summary>Runs the associated <see cref="MarkdownCommand"/> against the text.</summary>
     Command,
 
+    /// <summary>Reverts the editor to the previous state in the undo history.</summary>
+    Undo,
+
+    /// <summary>Re-applies the most recently undone change.</summary>
+    Redo,
+
     /// <summary>A non-interactive vertical divider in the toolbar.</summary>
     Separator,
 
